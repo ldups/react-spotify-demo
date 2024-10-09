@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import './App.css';
+import RenderedItems from './RenderedItems';
 
 
 
@@ -47,15 +48,6 @@ function App() {
     setArtists(data.items)
   }
 
-  const renderArtists = () => {
-    return artists.map(artist => (
-        <div key={artist.id}>
-            {artist.images.length ? <img width={"100%"} src={artist.images[0].url} alt=""/> : <div>No Image</div>}
-            {artist.name}
-        </div>
-    ))
-}
-
   return (
     <div className="App">
       <header className="App-header">
@@ -69,10 +61,11 @@ function App() {
         Get top artists.
     </button>
 
-    {renderArtists()}
+    <RenderedItems items={artists}/>
       </header>
     </div>
   );
+
 }
 
 export default App;
