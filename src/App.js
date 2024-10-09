@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import './App.css';
-import RenderedItems from './RenderedItems';
+import RenderedArtists from './RenderedArtists';
+import RenderedTracks from './RenderedTracks';
 
 
 
@@ -16,6 +17,7 @@ function App() {
 
   const [token, setToken] = useState("")
   const [artists, setArtists] = useState([])
+  const [tracks, setTracks] = useState([])
 
   useEffect(() => {
     const hash = window.location.hash
@@ -37,7 +39,7 @@ function App() {
     window.localStorage.removeItem("token")
   }
 
-  const searchTopItems = async (e) => {
+  const searchTopArtists = async (e) => {
     e.preventDefault()
     const {data} = await axios.get("https://api.spotify.com/v1/me/top/artists", {
         headers: {
@@ -48,20 +50,37 @@ function App() {
     setArtists(data.items)
   }
 
+  const searchTopTracks = async (e) => {
+    e.preventDefault()
+    const {data} = await axios.get("https://api.spotify.com/v1/me/top/tracks", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+    })
+    setTracks(data.items);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-      <h1>Spotify React</h1>
-                {!token ?
-                    <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${scopes.join("%20")}&response_type=${RESPONSE_TYPE}`}>Login
-                        to Spotify</a>
-                    : <button onClick={logout}>Logout</button>}
+      <h1>React with Spotify API Demo</h1>
+      <div className='buttons'>
+      {!token ?
+                    <div className='button'><a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${scopes.join("%20")}&response_type=${RESPONSE_TYPE}`}>Login
+                        to Spotify</a></div>
+                    : <button onClick={logout} className='button'>Logout</button>}
 
-    <button onClick={searchTopItems}>
+    <button onClick={searchTopArtists} className='button'>
         Get top artists.
     </button>
-
-    <RenderedItems items={artists}/>
+    <button onClick={searchTopTracks} className='button'>
+        Get top tracks.
+    </button>
+      </div>
+    <div className='rendered-containers'>
+      <RenderedArtists artists={artists}/>
+      <RenderedTracks tracks={tracks}/>
+    </div>
       </header>
     </div>
   );
